@@ -1,0 +1,69 @@
+<% include ../common/meta.html %>
+
+  <body>
+
+    <% include ../common/header.html %>
+
+  <!-- content start -->
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf am-padding am-padding-bottom-0">
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">聊天室</strong> / <small>Chat Rooms</small></div>
+      </div>
+
+      <hr/>
+	
+	  <%- (_query.sameAccount >= 0?'<div class="am-alert am-alert-warning am-margin"><button type="button" class="am-close">&times;</button> 有用户使用相同的帐号进入房间 '+ _chatRooms[_query.sameAccount].name +'，您被迫退出！</div>':'') -%>	
+      <ul class="am-avg-sm-1 am-avg-md-2 am-avg-lg-4 am-margin chat-room-list">
+        
+    	<%
+    	for(var i = 0; i < _chatRooms.length; i++)
+    	{
+    	%>
+       <li>
+       	
+       	 <div class="am-margin chat-room-item">
+	       	 <div class="meta">
+				
+		       	<small class=""><%= _arrCount[i] %>/<%= _chatRooms[i].limited || 'unlimited' %></small>
+		       	<%
+				if (_chatRooms[i].password)
+				{
+				%>
+				<span class="am-icon-lock am-icon-sm"></span>
+				<%
+				}
+		       	%>
+		     </div>
+         <a href="/homes/chatRoom/<%= i %>" class="am-alert am-alert-<%=_chatRooms[i].theme || 'default' %> link am-vertical-align am-text-center">
+			
+			<b class="am-vertical-align-middle"><%= _chatRooms[i].name || 'N/A' %>
+				<small class="am-block am-text-muted"><%= _chatRooms[i].desc || '' %></small>
+			</b>
+         </a>
+         </div>
+        </li>
+
+      <%}%>
+
+         
+
+      </ul>
+
+    </div>
+ 
+
+    <% include ../common/footer.html %>
+
+  </div>
+  <!-- content end -->
+
+</div>
+
+<a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+
+  
+  	<% include ../common/scripts.html %>
+  
+  </body>
+</html>

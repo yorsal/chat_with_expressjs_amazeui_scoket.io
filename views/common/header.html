@@ -1,0 +1,48 @@
+<header class="am-topbar am-topbar-inverse admin-header">
+  <div class="am-topbar-brand">
+    <strong><%= global.config.title %></strong>
+  </div>
+
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+
+  <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+
+    <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list">
+      
+      <li class="am-dropdown" data-am-dropdown>
+        <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+          <span class="am-icon-user"></span> <%= global.config.member_mobile %> <span class="am-icon-caret-down"></span>
+        </a>
+        <ul class="am-dropdown-content">
+          <li><a href="/users"><span class="am-icon-user"></span> 资料</a></li>
+          <li><a href="/logout"><span class="am-icon-power-off"></span> 退出</a></li>
+        </ul>
+      </li>
+     
+    </ul>
+  </div>
+</header><!-- end header -->
+
+<div class="am-cf admin-main">
+<!-- sidebar start -->
+<div class="admin-sidebar am-offcanvas" id="admin-offcanvas">
+<div class="am-offcanvas-bar admin-offcanvas-bar">
+  <ul class="am-list admin-sidebar-list">
+    
+
+    <li><a href="/homes"><span class="am-icon-home"></span> Dashboard 
+          <% if (global.config.menuSelected == 'homes'){ %> 
+          <span class="am-icon-angle-right am-fr am-margin-right"></span>
+          <%}%>
+    </a></li>
+    <li><a href="/users"><span class="am-icon-cog"></span> User Profile
+          <% if (global.config.menuSelected == 'users'){ %> 
+          <span class="am-icon-angle-right am-fr am-margin-right"></span>
+          <%}%>
+    </a></li>
+    
+  </ul>
+
+</div>
+</div>
+<!-- sidebar end -->

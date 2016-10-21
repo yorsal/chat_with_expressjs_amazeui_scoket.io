@@ -1,0 +1,38 @@
+/* Write your styles */
+.chat-room-list li div.chat-room-item { 
+	display: block; 
+	transition: all .5s ease; 
+	height: 180px; 
+	position: relative;
+}
+
+.chat-room-list li div.chat-room-item:hover {
+	
+	transform: scale(1.1,1.1);
+	box-shadow: 1px 1px 3px #ccc;
+	zoom: 120%;
+}
+
+.chat-room-list li a.link { 
+	display: block; 
+	transition: all .1s ease; 
+	height: 180px; 
+	position: relative;
+}
+.chat-room-list li a.link:hover {
+	color:#fff;
+}
+
+
+
+.chat-room-list .meta {   
+	position: absolute; 
+	z-index: 3;
+	top: 5px;
+	right: 10px;
+	color:#fff;
+}
+
+.chat-item { background: #eee; padding: 15px; border-radius: 15px; }
+.chat-item.am-fr { background:#5eb95e; color:#fff;   }
+.chat-item p { word-wrap: break-word; word-break: break-all;  }

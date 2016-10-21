@@ -1,0 +1,113 @@
+<% include ../common/meta.html %>
+
+  <body>
+
+    
+	<% include ../common/header.html %>
+
+  <!-- content start -->
+  <div class="admin-content">
+
+  	<% if (!_chatRoom.password || _chatRoom.password == _password) { %>
+
+    <div class="admin-content-body">
+      <div class="am-cf am-padding am-padding-bottom-0">
+        <div class="am-fl am-cf"> <%= _chatRoom.name %><small></small></div>
+      </div>
+
+      <hr/>
+		
+	  <div class="am-g am-margin">
+		<div class="am-u-md-2 am-u-sm-12 am-hide-sm-only am-scrollable-vertical" style="height:400px">
+			<ul class="am-list" id="chat_userlist">
+
+			  <li><a href="#"><span class="am-icon-user"></span> <%= global.config.member_mobile %></a></li>
+			  <% 
+				for (var i = 0; i < _chatUserList.length; i++)
+				{
+					if (_chatUserList[i].roomID == _id && global.config.member_mobile != _chatUserList[i].mobile)
+					{
+					%>
+					<li><a href="#"><span class="am-icon-user"></span> <%= _chatUserList[i].mobile %></a></li>
+					<%
+					}
+				}
+				 %>
+			  
+			</ul>
+		</div>
+		<div class="am-u-md-10 am-u-sm-12">
+
+			<div class="am-scrollable-vertical am-padding-left am-margin-right" id="chat_box" style="height:400px; border-left: 1px solid #ddd;">
+			  
+			  
+			    <div id="chat_records_tips" class="am-text-center am-margin-xl">this is chatting records</div>
+			 
+			</div>
+		</div>
+	  </div>
+     
+
+    </div>
+	<form action="post" class="am-form am-margin">
+		<div class="am-form-group">
+   		<textarea class="" rows="5" id="message_textarea" placeholder="please input something here..."></textarea>
+
+		</div>
+		<p><button type="submit" class="am-btn am-btn-sm am-btn-primary am-fr am-u-sm-2" id="btn_submit">提交</button></p>
+    </form>
+    <%}else{%>
+    <% if (_password != undefined) {%>
+    <div class="am-alert am-alert-warning"><button type="button" class="am-close">&times;</button> password is wrong, please try again!</div>
+    <%}%>
+    <div class="admin-content-body">
+ 	<form action="/homes/chatRoom/<%=_id%>" method="get" class="am-form am-margin">
+		<div class="am-form-group">
+   		<textarea class="" rows="5" name="password" placeholder="the room '<%= _chatRoom.name %>' need a password, please enter password"></textarea>
+
+		</div>
+		<p><button type="submit" class="am-btn am-btn-sm am-btn-primary am-fr am-u-sm-2" id="btn_submit">提交</button></p>
+    </form>
+    </div>
+ 	<%}%>
+
+    <% include ../common/footer.html %>
+
+  </div>
+  <!-- content end -->
+
+</div>
+
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="full-modal">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">提示
+     
+    </div>
+    <div class="am-modal-bd">
+      房间已满 <a href="/homes">返回</a>
+    </div>
+  </div>
+</div>
+
+<a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+
+  
+  	<% include ../common/scripts.html %>
+
+  	<script type="text/javascript">
+
+  		var _chatConfig = {
+  			roomID: '<%= _id %>',
+  			mobile: '<%= global.config.member_mobile %>'
+  		}; 
+    </script>
+	
+	<!-- page scripts -->
+	<% if (!_chatRoom.password || _chatRoom.password == _password) { %>
+	<script src="/socket.io/socket.io.js"></script>
+	<%- global.funcs.parseScripts('chat'); %>
+	<%}%>
+	
+  
+  </body>
+</html>

@@ -1,0 +1,163 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('jiayuan:server');
+var http = require('http');
+var moment = require('moment');
+var xss = require('xss');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP/socket server.
+ */
+
+var server = http.createServer(app);
+
+var io = require('socket.io')(server);
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+
+  //listen which room join
+  socket.on('join', function(data){
+      
+
+      var roomID = data.roomID,
+          mobile = data.mobile;
+          arrCount = global.funcs.getCurrentUser();
+      if (!global.config.chatRooms[roomID].limited || global.config.chatRooms[roomID].limited >= arrCount[roomID] + 1)
+      {
+         // push an array when a new user join
+        if (global.config.chatUserList.length > 0)
+        {
+          var isSameItem = false;
+          for (var i = 0; i < global.config.chatUserList.length; i++)
+          {
+        
+            if (global.config.chatUserList[i].roomID == roomID && global.config.chatUserList[i].mobile == mobile)
+            {
+                isSameItem = true;
+                break;
+            }
+          }
+          if (!isSameItem) global.config.chatUserList.push({roomID: roomID, mobile: mobile});
+
+        }
+        else
+        {
+          global.config.chatUserList.push({roomID: roomID, mobile: mobile});
+          
+        }
+
+        //console.log(data.mobile);
+        socket.join(roomID);
+
+        socket.broadcast.to(roomID).emit('join user', { mobile: mobile }); //分发 有其它用户加入
+
+        socket.on('message', function (data) {
+          
+          io.sockets.in(roomID).emit('msg', { mobile: xss(data.mobile), msg: xss(data.msg), time: moment().format("YYYY-MM-DD HH:mm:ss") }); //分发 消息
+        });
+
+        socket.on('disconnect', function(){
+          console.log('user disconnected');
+          for (var i = 0; i < global.config.chatUserList.length; i++)
+          {
+            
+            if (global.config.chatUserList[i].roomID == roomID && global.config.chatUserList[i].mobile == mobile)
+            {
+                global.config.chatUserList.splice(i, 1); //remove disconnected user
+            }
+          }
+          socket.broadcast.to(roomID).emit('leave user', { mobile: mobile }); //分发 有其它用户离开
+        });
+
+      }
+      else //服务器拒绝join
+      {
+          socket.disconnect();
+      }
+     
+  });
+
+
+
+});
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
