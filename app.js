@@ -33,7 +33,7 @@ app.set('view engine', 'html');
 
 app.use(session({
   secret: 'keyboard cat',
-  cookie: { path: '/', httpOnly: true, secure: false, maxAge: 30000 }
+  cookie: { path: '/', httpOnly: true, secure: false, maxAge: 24*60*60*1000 } // session expired after 24 hours
 }))
 
 // uncomment after placing your favicon in /public
